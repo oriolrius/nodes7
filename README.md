@@ -1,5 +1,17 @@
 # nodes7
 
+> **This is `@oriolrius/nodes7`, a fork of [`@st-one-io/nodes7`](https://github.com/st-one-io/nodes7)** with fixes for the S7comm fill bytes ("padding") that are still open upstream. It is a drop-in replacement: same API, only the package name changes.
+>
+> | Version | Changes compared to `@st-one-io/nodes7` 1.1.2 |
+> |---|---|
+> | 1.1.3 | Multi-item writes send the fill bytes again; 1.1.2 dropped them and PLCs answer `0x8104` ([st-one-io/nodes7#16](https://github.com/st-one-io/nodes7/issues/16)). `writeItems()` counts the fill bytes when splitting requests, so writing many booleans/bytes no longer exceeds the PDU ([#8](https://github.com/st-one-io/nodes7/issues/8)). The read optimizer reserves the response fill bytes, fixing `0x8500` with many odd-length variables ([#17](https://github.com/st-one-io/nodes7/issues/17)). Unit tests no longer depend on the local timezone; integration tests against a strict PLC simulator. |
+>
+> The fixes are proposed upstream; this fork exists until they are released there.
+>
+> ```bash
+> npm install @oriolrius/nodes7
+> ```
+
 NodeS7 is a library that allows communication to S7-200/300/400/1200/1500 PLCs using the Siemens S7Communication protocol over ISO-on-TCP (RFC1006) or MPI/PPI/DP USB Adapters.
 
 Niether the software nor the authors are affiliated with Siemens in any way. S7-200, S7-300, S7-400, S7-1200 and S7-1500 are trademarks of Siemens AG.
