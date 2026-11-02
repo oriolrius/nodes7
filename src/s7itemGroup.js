@@ -135,6 +135,9 @@ class S7ItemGroup extends EventEmitter {
                 /* conditions to add to the same part*/
                 if (packet && part
                     && this._isOptimizable(lastItem, item)
+                    // a part can't grow backwards: after a split, the current part may
+                    // already start past this item's offset (#20)
+                    && itemOffset >= part.address
                     && (pktResLength + (itemOffset + minRequiredLength) - (part.address + part.length) <= maxPayloadSize)
                 ) {
                     debug('S7ItemGroup _prepareReadPackets optimize', item._string);

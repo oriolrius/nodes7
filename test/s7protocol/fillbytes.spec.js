@@ -165,6 +165,32 @@ describe('S7 fill bytes', () => {
     });
 
     describe('read packet optimization (#17)', () => {
+        for (const [pduSize, block, field] of [
+            [61, 'DB1,BYTE0.26', 'DB1,BYTE22.18'],
+            [240, 'DB1,BYTE0.205', 'DB1,BYTE201.18'],
+            [480, 'DB1,BYTE0.445', 'DB1,BYTE441.18'],
+            [960, 'DB1,BYTE0.925', 'DB1,BYTE921.18']
+        ]) {
+            it(`reads an item that starts before a split part in a ${pduSize}-byte PDU (#20)`, async () => {
+                const endpoint = fakeEndpoint(pduSize);
+                endpoint.readVars = async parts => parts.map(part => ({
+                    returnCode: proto.retval.DATA_OK,
+                    data: Buffer.from(Array.from({ length: part.length }, (_, i) => (part.address + i) & 0xff))
+                }));
+                const group = new S7ItemGroup(endpoint);
+                const tags = { block, field };
+                group.setTranslationCB(tag => tags[tag]);
+                group.addItems(Object.keys(tags));
+                const result = await group.readAllItems();
+                const expected = spec => {
+                    const [, start, length] = spec.match(/BYTE(\d+)\.(\d+)/).map(Number);
+                    return Array.from({ length }, (_, i) => (start + i) & 0xff);
+                };
+                expect(Array.from(result.block)).to.deep.equal(expected(block));
+                expect(Array.from(result.field)).to.deep.equal(expected(field));
+            });
+        }
+
         it('preserves every byte of overlapping items at the split boundary', async () => {
             const endpoint = fakeEndpoint(61);
             endpoint.readVars = async parts => parts.map(part => ({
