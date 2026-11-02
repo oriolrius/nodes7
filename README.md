@@ -4,6 +4,8 @@
 >
 > | Version | Changes compared to `@st-one-io/nodes7` 1.1.2 |
 > |---|---|
+> | 1.1.5 | Reads no longer return zeros in the first bytes of a variable that starts just before the point where a long variable was split across packets ([st-one-io/nodes7#20](https://github.com/st-one-io/nodes7/issues/20), reported by @Poseidonas). |
+> | 1.1.4 | Fill bytes are counted only between items: reads no longer skip the first byte of an item at a part boundary, and writes that exactly fill the PDU are accepted again. |
 > | 1.1.3 | Multi-item writes send the fill bytes again; 1.1.2 dropped them and PLCs answer `0x8104` ([st-one-io/nodes7#16](https://github.com/st-one-io/nodes7/issues/16)). `writeItems()` counts the fill bytes when splitting requests, so writing many booleans/bytes no longer exceeds the PDU ([#8](https://github.com/st-one-io/nodes7/issues/8)). The read optimizer reserves the response fill bytes, fixing `0x8500` with many odd-length variables ([#17](https://github.com/st-one-io/nodes7/issues/17)). Unit tests no longer depend on the local timezone; integration tests against a strict PLC simulator. |
 >
 > The fixes are proposed upstream; this fork exists until they are released there.

@@ -1,7 +1,7 @@
 {
   "name": "@oriolrius/nodes7",
   "description": "A javascript library to communicate with Siemens S7 PLCs (fork of @st-one-io/nodes7 with the S7comm fill-byte fixes)",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "author": "Guilherme Francescon <guilherme@st-one.io>",
   "contributors": [
     "Oriol Rius <oriol@joor.net>"
